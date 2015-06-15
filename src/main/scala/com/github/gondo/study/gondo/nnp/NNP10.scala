@@ -36,7 +36,18 @@ trait NNP10 {
   }
 
   def compress(list: List[Symbol]): List[Symbol] = {
-    ???
+    def concat(prev: List[Symbol], next: List[Symbol]): List[Symbol] = {
+      if (next.isEmpty) {
+        prev
+      } else {
+        if (next.head != prev.last) {
+          concat(prev :+ next.head, next.tail)
+        } else {
+          concat(prev, next.tail)
+        }
+      }
+    }
+    concat(list.take(1), list.tail)
   }
 
   def pack(list: List[Symbol]): List[List[Symbol]] = {
