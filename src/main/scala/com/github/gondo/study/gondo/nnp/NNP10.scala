@@ -1,9 +1,23 @@
 package com.github.gondo.study.gondo.nnp
 
+import scala.annotation.tailrec
+
 /**
  * Created by naoki.gondo on 2015/06/12.
  */
 trait NNP10 {
+
+  // 番外編(総和)
+  def sum(n: Int): Int = {
+    @tailrec
+    def loop(i: Int, acc: Int): Int = {
+      i match {
+        case n if n == 0 => acc
+        case _ => loop(i - 1, acc + i)
+      }
+    }
+    loop(n, 0)
+  }
 
   // P01 (*) Find the last element of a list.
   def last(list: List[Int]): Int = {
@@ -37,14 +51,10 @@ trait NNP10 {
 
   def compress(list: List[Symbol]): List[Symbol] = {
     def concat(prev: List[Symbol], next: List[Symbol]): List[Symbol] = {
-      if (next.isEmpty) {
-        prev
-      } else {
-        if (next.head != prev.last) {
-          concat(prev :+ next.head, next.tail)
-        } else {
-          concat(prev, next.tail)
-        }
+      next match {
+        case Nil => prev
+        case n if prev.last != next.head => concat(prev :+ next.head, next.tail)
+        case _ => concat(prev, next.tail)
       }
     }
     concat(list.take(1), list.tail)
