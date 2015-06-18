@@ -20,25 +20,57 @@ trait NNP10 {
   }
 
   // P01 (*) Find the last element of a list.
-  def last(list: List[Int]): Int = {
-    list.last
+  @tailrec
+  final def last(list: List[Int]): Int = {
+    list match {
+      case Nil => throw new IllegalArgumentException
+      case head::Nil => head
+      case head::tail => last(tail)
+    }
   }
 
   // P02 (*) Find the last but one element of a list.
-  def penultimate(list: List[Int]): Int = {
-    list.init.last
+  @tailrec
+  final def penultimate(list: List[Int]): Int = {
+    list match {
+      case Nil => throw new IllegalArgumentException
+      case head::Nil => throw new IllegalArgumentException
+      case head::last::Nil=> head
+      case head::tail => penultimate(tail)
+    }
   }
 
   def nth(n: Int, list: List[Int]): Int = {
-    list(n)
+    @tailrec
+    def loop(lst: List[Int], idx: Int): Int = {
+      idx match {
+        case i if i == n => lst.head
+        case _ => loop(lst.tail, idx + 1)
+      }
+    }
+    loop(list, 0)
   }
 
   def length(list: List[Int]): Int = {
-    list.size
+    @tailrec
+    def loop(lst: List[Int], sum: Int): Int = {
+      lst match {
+        case Nil => sum
+        case _ => loop(lst.tail, sum + 1)
+      }
+    }
+    loop(list, 0)
   }
 
   def reverse(list: List[Int]): List[Int] = {
-    list.reverse
+    @tailrec
+    def loop(lst: List[Int], acc: List[Int]): List[Int] = {
+      lst match {
+        case Nil => acc
+        case _ => loop(lst.init, acc :+ lst.last)
+      }
+    }
+    loop(list, Nil)
   }
 
   def isPalindrome(list: List[Int]): Boolean = {
@@ -50,6 +82,7 @@ trait NNP10 {
   }
 
   def compress(list: List[Symbol]): List[Symbol] = {
+    @tailrec
     def concat(prev: List[Symbol], next: List[Symbol]): List[Symbol] = {
       next match {
         case Nil => prev
