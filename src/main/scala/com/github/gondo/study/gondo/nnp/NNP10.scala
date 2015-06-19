@@ -74,11 +74,23 @@ trait NNP10 {
   }
 
   def isPalindrome(list: List[Int]): Boolean = {
-    list == list.reverse
+    list == reverse(list)
   }
 
   def flatten(nested: List[Any]): List[Any] = {
-    ???
+    @tailrec
+    def loop(target: Any, rest: List[Any], acc: List[Any]): List[Any] = {
+      if (target == Nil && rest == Nil) {
+        acc
+      } else {
+        target match {
+          case Nil => loop(rest.head, rest.tail, acc)
+          case lst: List[Any] => loop(lst.head, lst.tail::rest, acc)
+          case elm: Any => loop(rest.head, rest.tail, acc :+ elm)
+        }
+      }
+    }
+    loop(nested.head, nested.tail, Nil)
   }
 
   def compress(list: List[Symbol]): List[Symbol] = {
