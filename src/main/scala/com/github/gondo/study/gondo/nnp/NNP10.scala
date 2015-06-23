@@ -77,7 +77,7 @@ trait NNP10 {
     list == reverse(list)
   }
 
-  def flatten(nested: List[Any]): List[Any] = {
+  def myFlatten(nested: List[Any]): List[Any] = {
     @tailrec
     def loop(target: Any, rest: List[Any], acc: List[Any]): List[Any] = {
       if (target == Nil && rest == Nil) {
@@ -93,16 +93,30 @@ trait NNP10 {
     loop(nested.head, nested.tail, Nil)
   }
 
+  def flatten(nested: List[Any]): List[Any] = {
+    @tailrec
+    def loop(rest: List[Any], acc: List[Any]): List[Any] = {
+      rest match {
+        case Nil => acc
+        case head::tail => head match {
+          case lst: List[_] => loop(lst:::tail, acc)
+          case value => loop(tail, acc :+ value)
+        }
+      }
+    }
+    loop(nested, Nil)
+  }
+
   def compress(list: List[Symbol]): List[Symbol] = {
     @tailrec
     def concat(prev: List[Symbol], next: List[Symbol]): List[Symbol] = {
       next match {
         case Nil => prev
-        case n if prev.last != next.head => concat(prev :+ next.head, next.tail)
+        case n if prev.head != next.head => concat(next.head :: prev, next.tail)
         case _ => concat(prev, next.tail)
       }
     }
-    concat(list.take(1), list.tail)
+    concat(list.take(1), list.tail).reverse
   }
 
   def pack(list: List[Symbol]): List[List[Symbol]] = {
